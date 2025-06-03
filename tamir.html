@@ -737,6 +737,8 @@
                 quantityError: 'Lütfen geçerli bir çıkan adet girin.',
                 dateError: 'Lütfen tamamlanma tarihini girin.',
                 photoError: 'Lütfen tamamlanan saç fotoğrafını yükleyin.',
+                photoSetInState: '[DEBUG] Fotoğraf state içinde ayarlandı: ',
+                photoClearedFromState: '[DEBUG] Fotoğraf state içinden temizlendi.',
                 completing: 'Tamamlanıyor...',
                 uploadingPhoto: 'Fotoğraf yükleniyor...',
                 updatingRecord: 'Kayıt güncelleniyor...',
@@ -785,6 +787,8 @@
                 quantityError: 'Please enter a valid completed quantity.',
                 dateError: 'Please enter the completion date.',
                 photoError: 'Please upload the completed hair photo.',
+                photoSetInState: '[DEBUG] Photo set in state: ',
+                photoClearedFromState: '[DEBUG] Photo cleared from state.',
                 completing: 'Completing...',
                 uploadingPhoto: 'Uploading photo...',
                 updatingRecord: 'Updating record...',
@@ -894,8 +898,8 @@
                 } else if (isFirebaseInitialized) {
                     const container = document.getElementById('repairs-container');
                     if (container.querySelector('.empty-state h3')) {
-                         container.querySelector('.empty-state h3').textContent = t('connecting'); // Or a more appropriate message
-                         container.querySelector('.empty-state p').textContent = t('dataLoadError').split(':')[0]; // Or "No data yet"
+                         container.querySelector('.empty-state h3').textContent = t('connecting'); 
+                         container.querySelector('.empty-state p').textContent = t('dataLoadError').split(':')[0]; 
                     }
                 }
             }
@@ -908,7 +912,7 @@
         function initializeFirebase() {
             const statusText = document.getElementById('status-text');
             const connectionStatusDiv = document.getElementById('connection-status');
-            statusText.textContent = t('connecting'); // Set initial text
+            statusText.textContent = t('connecting'); 
 
             if (!firebaseConfig.apiKey || !firebaseConfig.projectId) {
                 showMessage(t('configError'), 'error', 10000);
@@ -945,8 +949,7 @@
             if (!isFirebaseInitialized) return;
 
             const container = document.getElementById('repairs-container');
-            // Initial loading message
-            if (!allRepairs.length) { // Show loading only if no data yet
+            if (!allRepairs.length) { 
                  container.innerHTML = `<div class="empty-state"><div class="loading"></div><h3>${t('connecting')}</h3><p>${t('dataLoadError').split(':')[0]}</p></div>`;
             }
 
@@ -955,7 +958,7 @@
                 snapshot.forEach(doc => {
                     allRepairs.push({ id: doc.id, ...doc.data() });
                 });
-                applyCurrentFilter(); // This will call displayRepairs
+                applyCurrentFilter(); 
             }, error => {
                 console.error("Error loading repairs:", error);
                 container.innerHTML = `
@@ -974,10 +977,9 @@
             document.querySelectorAll('.filter-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
-             if (event && event.currentTarget) { // Use currentTarget for the button clicked
+             if (event && event.currentTarget) { 
                 event.currentTarget.classList.add('active');
             } else {
-                // Fallback if event is not passed (e.g. initial load)
                 const activeButton = Array.from(document.querySelectorAll('.filter-btn')).find(btn =>
                     btn.getAttribute('onclick') && btn.getAttribute('onclick').includes(`filterRepairs('${newFilterType}'`)
                 );
@@ -1014,7 +1016,7 @@
         function displayRepairs() {
             const container = document.getElementById('repairs-container');
             
-            if (filteredRepairs.length === 0 && isFirebaseInitialized) { // Added isFirebaseInitialized check
+            if (filteredRepairs.length === 0 && isFirebaseInitialized) { 
                 container.innerHTML = `
                     <div class="empty-state">
                         <div class="empty-state-icon">🔍</div>
@@ -1023,12 +1025,12 @@
                     </div>`;
                 return;
             }
-             if (!isFirebaseInitialized && !allRepairs.length) { // If still initializing
+             if (!isFirebaseInitialized && !allRepairs.length) { 
                 container.innerHTML = `<div class="empty-state"><div class="loading"></div><h3>${t('connecting')}</h3><p>${t('dataLoadError').split(':')[0]}</p></div>`;
                 return;
             }
             
-            container.innerHTML = ''; // Clear previous cards
+            container.innerHTML = ''; 
             filteredRepairs.forEach(repair => {
                 const card = createRepairCard(repair);
                 container.appendChild(card);
@@ -1041,9 +1043,7 @@
             card.className = `repair-card ${isCompleted ? 'completed' : ''}`;
             
             card.addEventListener('click', function(event) {
-                // Prevent card expansion if clicking on form elements, buttons, or images within the card
                 if (event.target.closest('button, input, textarea, .photo-upload, img, a, .detail-icon, .form-group, label, .completion-form')) {
-                    // Allow expand icon to still work
                     if (event.target.classList.contains('expand-icon') || (event.target.parentElement && event.target.parentElement.classList.contains('expand-icon'))) {
                          this.classList.toggle('expanded');
                     }
@@ -1193,9 +1193,7 @@
                 ` : ''}
             `;
             
-            // Attach listeners and restore state for the completion form if it exists
             if (!isCompleted) {
-                // Query elements within the 'card' context, which is now populated with innerHTML
                 const photoInput = card.querySelector(`#photo-input-${repair.id}`);
                 const previewImg = card.querySelector(`#photo-preview-${repair.id}`);
                 const placeholder = card.querySelector(`#photo-placeholder-${repair.id}`);
@@ -1204,35 +1202,32 @@
                 const completionNotesInput = card.querySelector(`#completion-notes-${repair.id}`);
 
                 if (!activeFormState[repair.id]) {
-                    activeFormState[repair.id] = {};
+                    activeFormState[repair.id] = { file: null, dataURL: null, quantity: '', date: '', notes: '' }; // Initialize with all expected keys
                 }
                 const currentRepairState = activeFormState[repair.id];
 
-                // Restore photo preview
                 if (currentRepairState.dataURL && previewImg && placeholder) {
                     previewImg.src = currentRepairState.dataURL;
                     previewImg.style.display = 'block';
                     placeholder.style.display = 'none';
                 } else if (previewImg && placeholder) {
-                    previewImg.src = ''; // Clear if no dataURL
+                    previewImg.src = ''; 
                     previewImg.style.display = 'none';
                     placeholder.style.display = 'block';
                 }
 
-                // Restore/set completion date
                 if (completionDateInput) {
                     if (currentRepairState.date) {
                         completionDateInput.value = currentRepairState.date;
-                    } else { // Set default if no state and input is empty
+                    } else { 
                         const today = new Date();
-                        const offset = today.getTimezoneOffset(); // Get offset in minutes
+                        const offset = today.getTimezoneOffset(); 
                         const localToday = new Date(today.getTime() - (offset * 60 * 1000));
                         completionDateInput.value = localToday.toISOString().split('T')[0];
-                        currentRepairState.date = completionDateInput.value; // Store default in state
+                        currentRepairState.date = completionDateInput.value; 
                     }
                 }
                 
-                // Restore other inputs
                 if (completedQuantityInput) {
                      completedQuantityInput.value = currentRepairState.quantity || '';
                 }
@@ -1240,13 +1235,10 @@
                     completionNotesInput.value = currentRepairState.notes || '';
                 }
 
-
-                // Add event listeners
                 if (photoInput) {
                     photoInput.addEventListener('change', (e) => handlePhotoInputChange(e, repair.id));
                 } else { 
-                    // CRITICAL: If this logs, the photo input element isn't being found.
-                    console.error(`[createRepairCard] Photo input (photo-input-${repair.id}) NOT FOUND for repair ${repair.id} within its card after setting innerHTML. Check ID and card structure.`);
+                    console.error(`[createRepairCard] Fotoğraf giriş elemanı (photo-input-${repair.id}) BULUNAMADI (repair ${repair.id}). ID ve kart yapısını kontrol edin.`);
                 }
 
                 if (completedQuantityInput) {
@@ -1254,108 +1246,117 @@
                         if (!activeFormState[repair.id]) activeFormState[repair.id] = {};
                         activeFormState[repair.id].quantity = e.target.value;
                     });
-                } else { console.error(`[createRepairCard] Quantity input not found for repair ${repair.id}`); }
+                }
                 
                 if (completionDateInput) {
-                    completionDateInput.addEventListener('change', e => { // 'change' is better for date inputs
+                    completionDateInput.addEventListener('change', e => { 
                         if (!activeFormState[repair.id]) activeFormState[repair.id] = {};
                         activeFormState[repair.id].date = e.target.value;
                     });
-                } else { console.error(`[createRepairCard] Date input not found for repair ${repair.id}`); }
+                }
 
                 if (completionNotesInput) {
                     completionNotesInput.addEventListener('input', e => {
                         if (!activeFormState[repair.id]) activeFormState[repair.id] = {};
                         activeFormState[repair.id].notes = e.target.value;
                     });
-                } else { console.error(`[createRepairCard] Notes input not found for repair ${repair.id}`); }
+                }
             }
             
             return card;
         }
 
         function handlePhotoInputChange(event, repairId) {
+            console.log(`[handlePhotoInputChange] Tetiklendi - Repair ID: ${repairId}`);
             const file = event.target.files[0];
-            const inputElement = event.target; // The file input itself
-            const cardElement = inputElement.closest('.repair-card'); // Find the parent card
+            const inputElement = event.target; 
+            const cardElement = inputElement.closest('.repair-card'); 
 
             if (!cardElement) {
-                console.error(`[handlePhotoInputChange] CRITICAL: Could not find parent .repair-card for input related to repairId: ${repairId}. Photo functionality will likely fail for this card.`);
-                showMessage(t('repairError') + ' (UI Error P01)', 'error'); // P01 for easier debugging
+                console.error(`[handlePhotoInputChange] KRİTİK HATA: Repair ID ${repairId} için üst .repair-card elemanı bulunamadı. Fotoğraf işlevi bu kart için çalışmayabilir.`);
+                showMessage(t('repairError') + ' (UI Hatası P01)', 'error'); 
                 return;
             }
 
-            // Scope the search for preview and placeholder within this specific card
-            const previewImg = cardElement.querySelector(`#photo-preview-${repair.id}`);
-            const placeholder = cardElement.querySelector(`#photo-placeholder-${repair.id}`);
+            const previewImg = cardElement.querySelector(`#photo-preview-${repairId}`);
+            const placeholder = cardElement.querySelector(`#photo-placeholder-${repairId}`);
             
             if (!previewImg || !placeholder) {
-                console.error(`[handlePhotoInputChange] CRITICAL: Preview (found: ${!!previewImg}) or Placeholder (found: ${!!placeholder}) element NOT FOUND within card for repairId: ${repairId}. Check IDs photo-preview-${repairId} and photo-placeholder-${repairId}.`);
-                // Visual feedback of photo selection will fail.
-                // The app might still try to use the file if it passes validation, but user experience will be poor.
-                 showMessage(t('repairError') + ' (UI Error P02)', 'error'); // P02 for easier debugging
+                console.error(`[handlePhotoInputChange] KRİTİK HATA: Repair ID ${repairId} için önizleme (bulundu: ${!!previewImg}) veya yer tutucu (bulundu: ${!!placeholder}) elemanı KART İÇİNDE BULUNAMADI. ID'leri kontrol edin: photo-preview-${repairId} ve photo-placeholder-${repairId}.`);
+                 showMessage(t('repairError') + ' (UI Hatası P02)', 'error'); 
             }
             
-            if (!activeFormState[repairId]) activeFormState[repairId] = {};
+            if (!activeFormState[repairId]) {
+                console.warn(`[handlePhotoInputChange] activeFormState[${repairId}] tanımlı değil, oluşturuluyor.`);
+                activeFormState[repairId] = { file: null, dataURL: null, quantity: '', date: '', notes: '' };
+            }
             
             if (file) {
+                console.log(`[handlePhotoInputChange] Dosya seçildi: ${file.name}, Boyut: ${file.size}, Tip: ${file.type}`);
                 if (!file.type.match('image/jpeg') && !file.type.match('image/png') && !file.type.match('image/gif') && !file.type.match('image/webp')) {
                     showMessage(t('validImageError'), 'error');
-                    event.target.value = null; // Reset file input
+                    event.target.value = null; 
                     if (previewImg) previewImg.style.display = 'none';
                     if (placeholder) placeholder.style.display = 'block';
-                    delete activeFormState[repairId].file;
+                    delete activeFormState[repairId].file; // Use delete for clarity
                     delete activeFormState[repairId].dataURL;
+                    console.log(t('photoClearedFromState') + `Geçersiz dosya tipi nedeniyle - Repair ID: ${repairId}`);
                     return;
                 }
                 
                 if (file.size > 10 * 1024 * 1024) { // 10MB limit
                     showMessage(t('fileSizeError'), 'error');
-                    event.target.value = null; // Reset file input
+                    event.target.value = null; 
                     if (previewImg) previewImg.style.display = 'none';
                     if (placeholder) placeholder.style.display = 'block';
                     delete activeFormState[repairId].file;
                     delete activeFormState[repairId].dataURL;
+                    console.log(t('photoClearedFromState') + `Dosya boyutu büyük olduğu için - Repair ID: ${repairId}`);
                     return;
                 }
                 
-                activeFormState[repairId].file = file; // Store the File object
+                activeFormState[repairId].file = file; 
+                console.log(t('photoSetInState') + `${file.name} - Repair ID: ${repairId}`, activeFormState[repairId].file);
+
                 const reader = new FileReader();
                 reader.onload = function(e_reader) {
-                    if (previewImg) { // Check again, as it might have been reported missing above
+                    if (previewImg) { 
                         previewImg.src = e_reader.target.result;
                         previewImg.style.display = 'block';
                     }
-                    activeFormState[repairId].dataURL = e_reader.target.result; // Store dataURL for preview
-                    if (placeholder) { // Check again
+                    activeFormState[repairId].dataURL = e_reader.target.result; 
+                    if (placeholder) { 
                         placeholder.style.display = 'none';
                     }
+                    console.log(`[handlePhotoInputChange] FileReader.onload tamamlandı, dataURL ayarlandı - Repair ID: ${repairId}`);
                 }
                 reader.onerror = function() {
-                    console.error(`[handlePhotoInputChange] FileReader error for repairId: ${repairId}`);
-                    showMessage(t('repairError') + ' (File Read Error)', 'error');
-                    // Consider clearing state here too
+                    console.error(`[handlePhotoInputChange] FileReader hatası - Repair ID: ${repairId}`);
+                    showMessage(t('repairError') + ' (Dosya Okuma Hatası)', 'error');
                     delete activeFormState[repairId].file;
                     delete activeFormState[repairId].dataURL;
                      if (previewImg) { previewImg.src = ''; previewImg.style.display = 'none'; }
                      if (placeholder) placeholder.style.display = 'block';
+                     console.log(t('photoClearedFromState') + `FileReader hatası nedeniyle - Repair ID: ${repairId}`);
                 }
                 reader.readAsDataURL(file);
-            } else { // No file selected or selection cancelled
+            } else { 
+                console.log(`[handlePhotoInputChange] Dosya seçilmedi/iptal edildi - Repair ID: ${repairId}`);
                 delete activeFormState[repairId].file;
                 delete activeFormState[repairId].dataURL;
                 if (previewImg) {
-                    previewImg.src = ''; // Clear src
+                    previewImg.src = ''; 
                     previewImg.style.display = 'none';
                 }
                 if (placeholder) placeholder.style.display = 'block';
+                console.log(t('photoClearedFromState') + `Dosya seçilmediği için - Repair ID: ${repairId}`);
             }
         }
 
         async function uploadPhotoToImgur(file) {
             if (!IMGUR_CLIENT_ID || IMGUR_CLIENT_ID === 'YOUR_IMGUR_CLIENT_ID') {
-                console.error("Imgur Client ID is not defined.");
-                throw new Error(t('repairError') + "Imgur Client ID not configured.");
+                console.error("Imgur Client ID tanımlı değil.");
+                throw new Error(t('repairError') + "Imgur Client ID yapılandırılmamış.");
             }
 
             const formData = new FormData();
@@ -1370,36 +1371,49 @@
                     body: formData
                 });
 
-                const responseData = await response.json(); // Always try to parse JSON
+                const responseData = await response.json(); 
 
                 if (!response.ok) {
-                    console.error('Imgur API Error Data:', responseData);
-                    throw new Error(`Imgur upload error (${response.status}): ${responseData.data?.error?.message || responseData.data?.error || response.statusText}`);
+                    console.error('Imgur API Hata Verisi:', responseData);
+                    throw new Error(`Imgur yükleme hatası (${response.status}): ${responseData.data?.error?.message || responseData.data?.error || response.statusText}`);
                 }
 
                 if (!responseData.success || !responseData.data || !responseData.data.link) {
-                    console.error('Imgur API Unexpected Response:', responseData);
-                    throw new Error('Imgur API returned an unexpected response.');
+                    console.error('Imgur API Beklenmeyen Yanıt:', responseData);
+                    throw new Error('Imgur API beklenmeyen bir yanıt döndürdü.');
                 }
                 return responseData.data.link;
             } catch (error) {
-                console.error("Imgur photo upload error:", error);
-                throw error; // Re-throw to be caught by completeRepair
+                console.error("Imgur fotoğraf yükleme hatası:", error);
+                throw error; 
             }
         }
 
         async function completeRepair(repairId) {
+            console.log(`[completeRepair] Tetiklendi - Repair ID: ${repairId}`);
             if (!isFirebaseInitialized) {
                 showMessage(t('firebaseError').split(':')[0], 'error');
                 return;
             }
 
-            const currentRepairState = activeFormState[repairId] || {};
+            const currentRepairState = activeFormState[repairId]; 
+            console.log(`[completeRepair] Repair ID ${repairId} için mevcut form durumu:`, JSON.stringify(currentRepairState, (key, value) => {
+                if (key === 'file' && value instanceof File) { return { name: value.name, size: value.size, type: value.type }; } // Dosya nesnesini loglarken basitleştir
+                return value;
+            }));
+            
+            if (!currentRepairState) {
+                console.error(`[completeRepair] HATA: Repair ID ${repairId} için activeFormState bulunamadı! Bu durum beklenmiyor.`);
+                showMessage(t('repairError') + ` (İç Hata S01 - ${repairId})`, 'error');
+                return;
+            }
             
             const completedQuantityStr = currentRepairState.quantity !== undefined ? currentRepairState.quantity : document.getElementById(`completed-quantity-${repairId}`).value;
             const completionDate = currentRepairState.date !== undefined ? currentRepairState.date : document.getElementById(`completion-date-${repairId}`).value;
             const completionNotes = (currentRepairState.notes !== undefined ? currentRepairState.notes : document.getElementById(`completion-notes-${repairId}`).value).trim();
-            const photoFile = currentRepairState.file; // Get file from state
+            const photoFile = currentRepairState.file; 
+
+            console.log(`[completeRepair] Değerler: Adet='${completedQuantityStr}', Tarih='${completionDate}', Notlar='${completionNotes}', Fotoğraf Dosyası Mevcut mu?: ${!!photoFile}`);
 
             const completedQuantity = parseInt(completedQuantityStr);
             
@@ -1415,11 +1429,12 @@
                 return;
             }
             
-            if (!photoFile) { // Check the stored file
+            if (!photoFile) { 
                 showMessage(t('photoError'), 'error');
-                console.warn(`[completeRepair] Photo file missing for repairId ${repairId}. State:`, JSON.stringify(currentRepairState, (key, value) => key === 'file' && value instanceof File ? value.name : value));
+                console.warn(`[completeRepair] FOTOĞRAF DOSYASI EKSİK! Repair ID: ${repairId}. State'deki dosya:`, photoFile);
                 return;
             }
+            console.log(`[completeRepair] Fotoğraf dosyası ${photoFile.name} yüklenmeye hazır.`);
 
             const completeBtn = document.getElementById(`complete-btn-${repairId}`);
             const originalBtnText = completeBtn.innerHTML;
@@ -1428,7 +1443,8 @@
 
             try {
                 completeBtn.innerHTML = `<div class="loading"></div> ${t('uploadingPhoto')}`;
-                const photoURL = await uploadPhotoToImgur(photoFile); // Use the stored file
+                const photoURL = await uploadPhotoToImgur(photoFile); 
+                console.log(`[completeRepair] Fotoğraf yüklendi, URL: ${photoURL}`);
                 
                 completeBtn.innerHTML = `<div class="loading"></div> ${t('updatingRecord')}`;
                 await db.collection('repairs').doc(repairId).update({
@@ -1439,13 +1455,14 @@
                     completedAt: firebase.firestore.FieldValue.serverTimestamp(),
                     status: 'completed' 
                 });
+                console.log(`[completeRepair] Firestore kaydı güncellendi - Repair ID: ${repairId}`);
                 
                 showMessage(t('repairCompleted'), 'success');
-                delete activeFormState[repairId]; // Clear state for this form on success
-                // The onSnapshot listener will automatically re-render the card as completed.
+                delete activeFormState[repairId]; 
+                console.log(`[completeRepair] activeFormState[${repairId}] temizlendi.`);
                 
             } catch (error) {
-                console.error("Error completing repair:", error);
+                console.error("Tamir tamamlama hatası:", error);
                 showMessage(t('repairError') + error.message, 'error', 7000);
             } finally {
                 completeBtn.disabled = false;
@@ -1454,16 +1471,15 @@
         }
 
         function cancelCompletion(repairId) {
-            // Clear DOM inputs
+            console.log(`[cancelCompletion] Tetiklendi - Repair ID: ${repairId}`);
             const quantityInput = document.getElementById(`completed-quantity-${repairId}`);
             const notesInput = document.getElementById(`completion-notes-${repairId}`);
-            // Date input will be reset to today by the rendering logic if state is cleared
             
             if(quantityInput) quantityInput.value = '';
             if(notesInput) notesInput.value = '';
 
             const photoInput = document.getElementById(`photo-input-${repairId}`);
-            if (photoInput) photoInput.value = ''; // Clear file input
+            if (photoInput) photoInput.value = ''; 
             
             const previewImg = document.getElementById(`photo-preview-${repairId}`);
             const placeholder = document.getElementById(`photo-placeholder-${repairId}`);
@@ -1473,32 +1489,29 @@
                 placeholder.style.display = 'block';
             }
             
-            delete activeFormState[repairId]; // Clear stored state
+            if (activeFormState[repairId]) {
+                delete activeFormState[repairId]; 
+                console.log(`[cancelCompletion] activeFormState[${repairId}] temizlendi.`);
+            }
             showMessage(t('formCleared'), 'info');
-
-            // Optional: if the card is expanded, you might want to collapse it or re-render it
-            // For simplicity, we'll let the user manually collapse or the next data load will refresh.
         }
 
 
         function formatPhoneNumber(phone) {
             if (!phone) return t('unspecified');
-            let cleaned = String(phone).replace(/\D/g, ''); // Ensure phone is a string
+            let cleaned = String(phone).replace(/\D/g, '');
 
-            // Standard Turkish mobile format: 05xx xxx xx xx (11 digits)
             if (cleaned.startsWith('0') && cleaned.length === 11) {
                 return `0 (${cleaned.substring(1, 4)}) ${cleaned.substring(4, 7)} ${cleaned.substring(7, 9)} ${cleaned.substring(9, 11)}`;
             }
-            // Format for 10 digits (assuming local number without leading 0, e.g. 5xx xxx xx xx)
-            if (cleaned.length === 10 && !cleaned.startsWith('90') && cleaned.startsWith('5')) { // Common for mobile numbers entered without leading 0
+            if (cleaned.length === 10 && !cleaned.startsWith('90') && cleaned.startsWith('5')) { 
                  return `0 (${cleaned.substring(0, 3)}) ${cleaned.substring(3, 6)} ${cleaned.substring(6, 8)} ${cleaned.substring(8, 10)}`;
             }
-            // International format +90 5xx xxx xx xx (12 digits)
             if (cleaned.length === 12 && cleaned.startsWith('90')) {
                 return `+${cleaned.substring(0, 2)} (${cleaned.substring(2, 5)}) ${cleaned.substring(5, 8)} ${cleaned.substring(8, 10)} ${cleaned.substring(10, 12)}`;
             }
             
-            return phone; // Return original if no specific format matches
+            return phone; 
         }
 
         function openPhotoModal(imageURL) {
@@ -1510,7 +1523,7 @@
 
         function closePhotoModal() {
             document.getElementById('photo-modal').style.display = 'none';
-            document.getElementById('modal-image').src = ''; // Clear src to free memory
+            document.getElementById('modal-image').src = ''; 
         }
 
         let messageTimeout;
@@ -1529,16 +1542,15 @@
             
             document.body.appendChild(messageDiv);
 
-            // Force reflow for animation
             void messageDiv.offsetWidth; 
 
-            messageDiv.style.top = '20px'; // Slide in
+            messageDiv.style.top = '20px'; 
             messageDiv.style.opacity = '1';
 
             messageTimeout = setTimeout(() => {
                 messageDiv.style.opacity = '0';
-                messageDiv.style.top = '-100px'; // Slide out
-                setTimeout(() => messageDiv.remove(), 500); // Remove after animation
+                messageDiv.style.top = '-100px'; 
+                setTimeout(() => messageDiv.remove(), 500); 
             }, duration);
         }
 
