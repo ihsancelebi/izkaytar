@@ -66,8 +66,8 @@
 
         /* Logo Styling */
         #app-logo {
-            width: 360px; 
-            height: 120px;  
+            width: 720px;  /* GÜNCELLENDİ */
+            height: 240px; /* GÜNCELLENDİ */
             margin-bottom: 10px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
             position: relative;
@@ -429,7 +429,7 @@
             color: #555; 
             white-space: nowrap; 
         }
-      
+        
         /* Always visible details */
         .record-details-always-visible {
             display: grid;
@@ -549,10 +549,10 @@
 
         @media (min-width: 600px) { 
             .repair-comparison-grid {
-                grid-template-columns: 1fr 1fr; 
+                 grid-template-columns: 1fr 1fr; 
             }
             .after-repair-column {
-                margin-top: 0 !important; 
+                 margin-top: 0 !important; 
             }
         }
 
@@ -919,14 +919,14 @@
                 min-width: 80%;
             }
             #app-logo { 
-                width: 240px; 
-                height: 80px; 
+                width: 480px;  /* GÜNCELLENDİ */
+                height: 160px; /* GÜNCELLENDİ */
             }
         }
          @media (max-width: 480px) { 
             #app-logo {
-                width: 180px; 
-                height: 60px; 
+                width: 360px;  /* GÜNCELLENDİ */
+                height: 120px; /* GÜNCELLENDİ */
             }
              .lang-switcher {
                 top: auto;
@@ -1246,8 +1246,8 @@
                 recordCardCallStatusLabel: "Call Status", 
                 callStatusNotCalled: "Not Called", 
                 callStatusCalled: "Called",       
-                btnCall: "Call",                  
-                calling: "Calling...",            
+                btnCall: "Call",                
+                calling: "Calling...",          
                 notSpecified: "Not specified",
                 notCalculated: "Not calculated",
                 notesNone: "None", 
@@ -1355,8 +1355,8 @@
                 recordCardCallStatusLabel: "Arama Durumu", 
                 callStatusNotCalled: "Aranmadı", 
                 callStatusCalled: "Arandı",       
-                btnCall: "Ara",                   
-                calling: "Aranıyor...",           
+                btnCall: "Ara",                
+                calling: "Aranıyor...",         
                 notSpecified: "Belirtilmemiş",
                 notCalculated: "Hesaplanmadı",
                 notesNone: "Yok", 
@@ -1500,10 +1500,10 @@
                 const emptyStateDiv = document.querySelector('#records-container .empty-state');
                 if (emptyStateDiv) {
                      if (emptyStateDiv.querySelector('h3[data-translate="emptyStateWaitingFirebase"]')) {
-                         emptyStateDiv.querySelector('h3').textContent = lang.emptyStateWaitingFirebase;
-                         emptyStateDiv.querySelector('p').textContent = lang.emptyStateFirebaseWillInitialize;
+                          emptyStateDiv.querySelector('h3').textContent = lang.emptyStateWaitingFirebase;
+                          emptyStateDiv.querySelector('p').textContent = lang.emptyStateFirebaseWillInitialize;
                     } else if (emptyStateDiv.textContent.includes(translations.en.loadingRecords) || emptyStateDiv.textContent.includes(translations.tr.loadingRecords)) {
-                         emptyStateDiv.innerHTML = `<div class="empty-state"><div class="loading"></div> ${lang.loadingRecords}</div>`;
+                          emptyStateDiv.innerHTML = `<div class="empty-state"><div class="loading"></div> ${lang.loadingRecords}</div>`;
                     } else if (emptyStateDiv.querySelector('h3[data-translate="noRecordsFound"]')) {
                         emptyStateDiv.querySelector('h3').textContent = lang.noRecordsFound;
                         emptyStateDiv.querySelector('p').textContent = lang.noRecordsFoundMsg;
