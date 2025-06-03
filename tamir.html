@@ -122,8 +122,9 @@
             z-index: 2;
         }
 
-        .status-online { color: #28a745; } /* Will be green when online */
-        .status-offline { color: #dc3545; } /* Will be red when offline */
+        .status-online { color: #28a745; /* Will be green when online */ }
+        .status-offline { color: #dc3545; /* Will be red when offline */ }
+
 
         /* Content area styling */
         .content {
@@ -461,7 +462,7 @@
             background: #5a6268;
             box-shadow: 0 8px 20px rgba(108,117,125,0.3);
         }
-      
+        
         /* Action buttons */
         .action-buttons {
             display: flex;
@@ -893,8 +894,8 @@
                 } else if (isFirebaseInitialized) {
                     const container = document.getElementById('repairs-container');
                     if (container.querySelector('.empty-state h3')) {
-                         container.querySelector('.empty-state h3').textContent = t('connecting');
-                         container.querySelector('.empty-state p').textContent = t('dataLoadError').split(':')[0];
+                         container.querySelector('.empty-state h3').textContent = t('connecting'); // Or a more appropriate message
+                         container.querySelector('.empty-state p').textContent = t('dataLoadError').split(':')[0]; // Or "No data yet"
                     }
                 }
             }
@@ -1040,8 +1041,10 @@
             card.className = `repair-card ${isCompleted ? 'completed' : ''}`;
             
             card.addEventListener('click', function(event) {
+                // Prevent card expansion if clicking on form elements, buttons, or images within the card
                 if (event.target.closest('button, input, textarea, .photo-upload, img, a, .detail-icon, .form-group, label, .completion-form')) {
-                    if (event.target.classList.contains('expand-icon') || event.target.parentElement.classList.contains('expand-icon')) {
+                    // Allow expand icon to still work
+                    if (event.target.classList.contains('expand-icon') || (event.target.parentElement && event.target.parentElement.classList.contains('expand-icon'))) {
                          this.classList.toggle('expanded');
                     }
                     return; 
@@ -1241,7 +1244,10 @@
                 // Add event listeners
                 if (photoInput) {
                     photoInput.addEventListener('change', (e) => handlePhotoInputChange(e, repair.id));
-                } else { console.error(`[createRepairCard] Photo input not found for repair ${repair.id}`); }
+                } else { 
+                    // CRITICAL: If this logs, the photo input element isn't being found.
+                    console.error(`[createRepairCard] Photo input (photo-input-${repair.id}) NOT FOUND for repair ${repair.id} within its card after setting innerHTML. Check ID and card structure.`);
+                }
 
                 if (completedQuantityInput) {
                     completedQuantityInput.addEventListener('input', e => {
@@ -1270,9 +1276,25 @@
 
         function handlePhotoInputChange(event, repairId) {
             const file = event.target.files[0];
-            // These elements will be found if the card is in the DOM.
-            const previewImg = document.getElementById(`photo-preview-${repair.id}`);
-            const placeholder = document.getElementById(`photo-placeholder-${repair.id}`);
+            const inputElement = event.target; // The file input itself
+            const cardElement = inputElement.closest('.repair-card'); // Find the parent card
+
+            if (!cardElement) {
+                console.error(`[handlePhotoInputChange] CRITICAL: Could not find parent .repair-card for input related to repairId: ${repairId}. Photo functionality will likely fail for this card.`);
+                showMessage(t('repairError') + ' (UI Error P01)', 'error'); // P01 for easier debugging
+                return;
+            }
+
+            // Scope the search for preview and placeholder within this specific card
+            const previewImg = cardElement.querySelector(`#photo-preview-${repair.id}`);
+            const placeholder = cardElement.querySelector(`#photo-placeholder-${repair.id}`);
+            
+            if (!previewImg || !placeholder) {
+                console.error(`[handlePhotoInputChange] CRITICAL: Preview (found: ${!!previewImg}) or Placeholder (found: ${!!placeholder}) element NOT FOUND within card for repairId: ${repairId}. Check IDs photo-preview-${repairId} and photo-placeholder-${repairId}.`);
+                // Visual feedback of photo selection will fail.
+                // The app might still try to use the file if it passes validation, but user experience will be poor.
+                 showMessage(t('repairError') + ' (UI Error P02)', 'error'); // P02 for easier debugging
+            }
             
             if (!activeFormState[repairId]) activeFormState[repairId] = {};
             
@@ -1299,11 +1321,24 @@
                 
                 activeFormState[repairId].file = file; // Store the File object
                 const reader = new FileReader();
-                reader.onload = function(e) {
-                    if (previewImg) previewImg.src = e.target.result;
-                    activeFormState[repairId].dataURL = e.target.result; // Store dataURL for preview
-                    if (previewImg) previewImg.style.display = 'block';
-                    if (placeholder) placeholder.style.display = 'none';
+                reader.onload = function(e_reader) {
+                    if (previewImg) { // Check again, as it might have been reported missing above
+                        previewImg.src = e_reader.target.result;
+                        previewImg.style.display = 'block';
+                    }
+                    activeFormState[repairId].dataURL = e_reader.target.result; // Store dataURL for preview
+                    if (placeholder) { // Check again
+                        placeholder.style.display = 'none';
+                    }
+                }
+                reader.onerror = function() {
+                    console.error(`[handlePhotoInputChange] FileReader error for repairId: ${repairId}`);
+                    showMessage(t('repairError') + ' (File Read Error)', 'error');
+                    // Consider clearing state here too
+                    delete activeFormState[repairId].file;
+                    delete activeFormState[repairId].dataURL;
+                     if (previewImg) { previewImg.src = ''; previewImg.style.display = 'none'; }
+                     if (placeholder) placeholder.style.display = 'block';
                 }
                 reader.readAsDataURL(file);
             } else { // No file selected or selection cancelled
@@ -1382,6 +1417,7 @@
             
             if (!photoFile) { // Check the stored file
                 showMessage(t('photoError'), 'error');
+                console.warn(`[completeRepair] Photo file missing for repairId ${repairId}. State:`, JSON.stringify(currentRepairState, (key, value) => key === 'file' && value instanceof File ? value.name : value));
                 return;
             }
 
