@@ -7,6 +7,24 @@
     <style>
         body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
         .login-container { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); text-align: center; max-width: 400px; width: 90%; }
+        
+        /* EKLENDİ: Logo stili */
+        #app-logo {
+            width: 300px;
+            height: 100px;
+            max-width: 100%;
+            margin: 0 auto 25px auto; /* Yatayda ortala ve altına boşluk bırak */
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-mask-image: url(logo.svg);
+            mask-image: url(logo.svg);
+            -webkit-mask-size: contain;
+            mask-size: contain;
+            -webkit-mask-repeat: no-repeat;
+            mask-repeat: no-repeat;
+            -webkit-mask-position: center;
+            mask-position: center;
+        }
+
         h2 { margin-bottom: 20px; color: #333; }
         .form-group { margin-bottom: 20px; text-align: left; }
         label { display: block; margin-bottom: 5px; font-weight: 600; color: #555; }
@@ -19,6 +37,8 @@
 </head>
 <body>
     <div class="login-container">
+        <div id="app-logo"></div>
+
         <h2>Giriş Yap</h2>
         <p style="color:#6c757d; margin-top:-15px; margin-bottom:25px;">Lütfen devam etmek için giriş yapın.</p>
         <div class="form-group">
@@ -96,39 +116,6 @@
                 handleLogin();
             }
         });
-
-        /*
-        // İsteğe bağlı: Yeni kullanıcı kaydı fonksiyonu
-        const signupBtn = document.getElementById('signupBtn');
-        if(signupBtn) {
-            signupBtn.addEventListener('click', () => {
-                const email = emailInput.value;
-                const password = passwordInput.value;
-                 errorMessageDiv.style.display = 'none';
-
-                if (!email || !password) {
-                     errorMessageDiv.textContent = 'Lütfen e-posta ve şifre girin.';
-                     errorMessageDiv.style.display = 'block';
-                    return;
-                }
-
-                auth.createUserWithEmailAndPassword(email, password)
-                    .then((userCredential) => {
-                        console.log('Kayıt başarılı ve giriş yapıldı:', userCredential.user);
-                    })
-                    .catch((error) => {
-                        if (error.code === 'auth/email-already-in-use') {
-                             errorMessageDiv.textContent = 'Bu e-posta adresi zaten kullanımda.';
-                        } else if (error.code === 'auth/weak-password') {
-                             errorMessageDiv.textContent = 'Şifre en az 6 karakter olmalıdır.';
-                        } else {
-                            errorMessageDiv.textContent = 'Bir hata oluştu: ' + error.message;
-                        }
-                         errorMessageDiv.style.display = 'block';
-                    });
-            });
-        }
-        */
 
     </script>
 </body>
