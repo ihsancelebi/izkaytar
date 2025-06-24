@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="tr"> <head>
+<html lang="tr">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="pageTitle">Kaynak Saç Tamir Takip</title>
@@ -1007,7 +1008,8 @@
 
     </style>
 </head>
-<body style="display: none;"> <div class="container">
+<body style="display: none;">
+    <div class="container">
         <div class="header">
             <div class="lang-switcher">
                 <button class="lang-btn" id="lang-en" onclick="setLanguage('en')">EN</button>
@@ -1047,10 +1049,12 @@
                     
                     <div class="form-row">
                         <div class="form-group">
-                            <label data-translate="formRepairDateInput">Tamire Verilen Tarih</label> <input type="date" id="repairDate" required>
+                            <label data-translate="formRepairDateInput">Tamire Verilen Tarih</label>
+                            <input type="date" id="repairDate" required>
                         </div>
                         <div class="form-group">
-                            <label data-translate="formTerminDateInput">Termin Tarihi</label>  <input type="date" id="returnDate" required>
+                            <label data-translate="formTerminDateInput">Termin Tarihi</label>
+                            <input type="date" id="returnDate" required>
                         </div>
                     </div>
                     
@@ -1183,13 +1187,12 @@
     <script>
         // Global variables
         let db = null;
-        let records = []; 
-        let currentPhotoFile = null; 
-        let currentRecordForPrint = null; 
+        let records = [];
+        let currentPhotoFile = null;
+        let currentRecordForPrint = null;
         let isFirebaseInitialized = false;
-        let currentLanguage = localStorage.getItem('language') || 'tr'; 
+        let currentLanguage = localStorage.getItem('language') || 'tr';
 
-        // Translations (Mevcut haliyle kalacak, burada yer kaplamaması için kısaltıldı)
         const translations = {
             en: { pageTitle: "Hair Extension Repair Tracking", headerSubtitle: "Cloud-supported professional repair tracking system", connecting: "🔄 Connecting...", connected: "✔️ Connected", configError: "❌ Configuration Error", connectionError: "❌ Connection Error", navNewRecord: "➕ New Record", navRecords: "📋 Records", formFirstName: "First Name", formLastName: "Last Name", formPhone: "Phone", formPhoneExample: "Example: +90 553 528 0908 or 5535280908", formRepairDateInput: "Date Received for Repair", formTerminDateInput: "Deadline", formQuantity: "Number of Extensions", formUnitPrice: "Repair Price per Unit (₺)", formHasSet: "Will it be a Set?", formSetYes: "Yes", formSetNo: "No", formNotes: "Notes", formNotesPlaceholder: "Write your additional notes here...", formPhoto: "Photo", formAddPhoto: "Add Photo", formTapCamera: "Tap to open camera", photoPreviewAlt: "[Photo Preview]", btnAdd: "➕ Add", adding: "Adding...", uploadingPhoto: "Uploading photo...", addingRecord: "Adding record...", filterOptions: "Filter Options", filterStartDate: "Start Date", filterEndDate: "End Date", filterSearchNamePhone: "Search Name or Phone", filterSearchPlaceholder: "Name or phone number...", filterButton: "Filter", emptyStateWaitingFirebase: "Waiting for Firebase connection", emptyStateFirebaseWillInitialize: "Firebase will be initialized automatically when the page loads.", emptyStateFirebaseConfigError: "Firebase Configuration Error", emptyStateFirebaseConfigErrorMsg: "Please ensure the <code>firebaseConfig</code> object in the HTML file is correct.", emptyStateFirebaseConnectionError: "Firebase Connection Error", emptyStateFirebaseConnectionErrorMsg: "Check the console or ensure your Firebase configuration is correct.", loadingRecords: "Loading records...", couldNotLoadRecords: "Could not load records.", errorOccurred: "An error occurred. Please check the console or try again later.", noRecordsFound: "No records found matching your filters.", noRecordsFoundMsg: "Clear the filters and try again, or add a new record.", recordCardArrivalDateLabel: "Arrival:", recordCardDeadlineLabel: "Deadline:", recordCardPhone: "Phone", recordCardQuantity: "Quantity", recordCardSet: "Set", recordCardTotalPrice: "Total Price", recordCardNotesLabel: "Notes", recordCardCompletedQuantity: "Completed Quantity", recordCardCompletionDate: "Completion Date", recordCardCompletedPhoto: "Completed Photo", recordCardCompletionNotes: "Completion Notes", recordCardCallStatusLabel: "Call Status", callStatusNotCalled: "Not Called", callStatusCalled: "Called", btnCall: "Call", calling: "Calling...", notSpecified: "Not specified", notCalculated: "Not calculated", notesNone: "None", hairExtensionPhotoAlt: "[Hair Extension Photo]", completedHairPhotoAlt: "[Completed Hair Photo]", photoLoadError: "Photo could not be loaded", btnLabel: "Label", btnDelete: "Delete", largeViewAlt: "[Large View]", printModalTitle: "🖨️ Print Label", printModalSubtitle: "80x40mm label will be printed", btnClose: "Close", btnPrint: "🖨️ Print", printLabelTitle: "EXTENSION REPAIR", printLabelCustomer: "CUSTOMER:", printLabelPhone: "PHONE:", printLabelQuantity: "QUANTITY:", printLabelTerminDate: "DEADLINE:", beforeRepairTitle: "Before Repair", afterRepairTitle: "After Repair", repairNotCompletedYet: "Repair not completed yet.", alertImgurClientId: "Please enter your Imgur Client ID in the JavaScript code.", alertFirebaseConfigMissing: "Firebase configuration information is missing or incorrect! Please check the code.", alertFirebaseInitialized: "Firebase initialized successfully!", alertFirebaseInitError: "Firebase could not be initialized: {errorMsg}. Check the console.", alertInvalidImageFile: "Please select a valid image file.", alertFileSizeTooLarge: "File size is too large (Max. 10MB).", alertFirebaseNotInitialized: "Firebase is not initialized. Please check the configuration and refresh the page.", alertInvalidQuantity: "Please enter a valid number of extensions.", alertInvalidUnitPrice: "Please enter a valid unit price.", alertSetOptionMissing: "Please check the \"Will it be a Set?\" option.", alertRecordAddedSuccess: "Record added successfully!", alertPhotoUploadFailedImgurIdMissing: "Photo upload failed: Imgur Client ID is missing. Please update the code.", alertRecordAddFailed: "Could not add record: {errorMsg}", alertRecordsLoadFailed: "Could not load records: {errorMsg}", alertRecordDeletedImgurManual: "Record deleted. Imgur photo ({photoURL}) may need to be deleted manually.", alertRecordDeleteSuccess: "Record deleted successfully!", alertRecordDeleteFailed: "Could not delete record: {errorMsg}", alertPrintRecordNotFound: "Record to print not found.", alertPrintNoRecordSelected: "No record selected for printing.", alertCallStatusUpdateFailed: "Could not update call status: {errorMsg}", confirmDeleteTitle: "Delete Record?", confirmDeleteMsg: "Are you sure you want to delete this record? This action cannot be undone. Photos uploaded to Imgur (if any) must also be deleted separately via Imgur.", btnCancel: "Cancel", btnYesDelete: "Yes, Delete" },
             tr: { pageTitle: "Kaynak Saç Tamir Takip", headerSubtitle: "Bulut destekli profesyonel tamir takip sistemi", connecting: "🔄 Bağlanıyor...", connected: "✔️ Bağlandı", configError: "❌ Yapılandırma Hatası", connectionError: "❌ Bağlantı Hatası", navNewRecord: "➕ Yeni Kayıt", navRecords: "📋 Kayıtlar", formFirstName: "İsim", formLastName: "Soyisim", formPhone: "Telefon", formPhoneExample: "Örnek: +90 553 528 0908 veya 5535280908", formRepairDateInput: "Tamire Verilen Tarih", formTerminDateInput: "Termin Tarihi", formQuantity: "Kaynak Adedi", formUnitPrice: "Adet Tamir Fiyatı (₺)", formHasSet: "Takım Olacak mı?", formSetYes: "Evet", formSetNo: "Hayır", formNotes: "Notlar", formNotesPlaceholder: "Ek notlarınızı buraya yazın...", formPhoto: "Fotoğraf", formAddPhoto: "Fotoğraf Ekle", formTapCamera: "Dokunarak kamera aç", photoPreviewAlt: "[Fotoğraf Önizlemesi]", btnAdd: "➕ Ekle", adding: "Ekleniyor...", uploadingPhoto: "Fotoğraf yükleniyor...", addingRecord: "Kayıt ekleniyor...", filterOptions: "Filtreleme Seçenekleri", filterStartDate: "Başlangıç Tarihi", filterEndDate: "Bitiş Tarihi", filterSearchNamePhone: "İsim veya Telefon Ara", filterSearchPlaceholder: "İsim veya telefon numarası...", filterButton: "Filtrele", emptyStateWaitingFirebase: "Firebase bağlantısı bekleniyor", emptyStateFirebaseWillInitialize: "Sayfa yüklendiğinde Firebase otomatik olarak başlatılacaktır.", emptyStateFirebaseConfigError: "Firebase Yapılandırması Hatalı", emptyStateFirebaseConfigErrorMsg: "Lütfen HTML dosyasındaki <code>firebaseConfig</code> nesnesinin doğru olduğundan emin olun.", emptyStateFirebaseConnectionError: "Firebase Bağlantı Hatası", emptyStateFirebaseConnectionErrorMsg: "Konsolu kontrol edin veya Firebase yapılandırmanızın doğru olduğundan emin olun.", loadingRecords: "Kayıtlar yükleniyor...", couldNotLoadRecords: "Kayıtlar yüklenemedi.", errorOccurred: "Bir hata oluştu. Lütfen konsolu kontrol edin veya daha sonra tekrar deneyin.", noRecordsFound: "Filtrelerinize uygun kayıt bulunamadı.", noRecordsFoundMsg: "Filtreleri temizleyip tekrar deneyin veya yeni bir kayıt ekleyin.", recordCardArrivalDateLabel: "Geliş T.:", recordCardDeadlineLabel: "Termin T.:", recordCardPhone: "Telefon", recordCardQuantity: "Adet", recordCardSet: "Takım", recordCardTotalPrice: "Toplam Fiyat", recordCardNotesLabel: "Notlar", recordCardCompletedQuantity: "Çıkan Adet", recordCardCompletionDate: "Tamamlanma Tarihi", recordCardCompletedPhoto: "Tamamlanan Fotoğraf", recordCardCompletionNotes: "Tamamlama Notları", recordCardCallStatusLabel: "Arama Durumu", callStatusNotCalled: "Aranmadı", callStatusCalled: "Arandı", btnCall: "Ara", calling: "Aranıyor...", notSpecified: "Belirtilmemiş", notCalculated: "Hesaplanmadı", notesNone: "Yok", hairExtensionPhotoAlt: "[Kaynak Saç Fotoğrafı]", completedHairPhotoAlt: "[Tamamlanmış Saç Fotoğrafı]", photoLoadError: "Fotoğraf yüklenemedi", btnLabel: "Etiket", btnDelete: "Sil", largeViewAlt: "[Büyük Görünüm]", printModalTitle: "🖨️ Etiket Yazdır", printModalSubtitle: "80x40mm etiket yazdırılacak", btnClose: "Kapat", btnPrint: "🖨️ Yazdır", printLabelTitle: "KAYNAK TAMİR", printLabelCustomer: "MÜŞTERİ:", printLabelPhone: "TELEFON:", printLabelQuantity: "ADET:", printLabelTerminDate: "TERMİN TAR:", beforeRepairTitle: "Tamir Öncesi", afterRepairTitle: "Tamir Sonrası", repairNotCompletedYet: "Tamir henüz tamamlanmadı.", alertImgurClientId: "Lütfen Imgur Client ID'nizi JavaScript koduna girin.", alertFirebaseConfigMissing: "Firebase yapılandırma bilgileri eksik veya hatalı! Lütfen kodu kontrol edin.", alertFirebaseInitialized: "Firebase başarıyla başlatıldı!", alertFirebaseInitError: "Firebase başlatılamadı: {errorMsg}. Konsolu kontrol edin.", alertInvalidImageFile: "Lütfen geçerli bir resim dosyası seçin.", alertFileSizeTooLarge: "Dosya boyutu çok büyük (Maks. 10MB).", alertFirebaseNotInitialized: "Firebase başlatılmadı. Lütfen yapılandırmayı kontrol edin ve sayfayı yenileyin.", alertInvalidQuantity: "Lütfen geçerli bir kaynak adedi girin.", alertInvalidUnitPrice: "Lütfen geçerli bir birim fiyat girin.", alertSetOptionMissing: "Lütfen \"Takım Olacak mı?\" seçeneğini işaretleyin.", alertRecordAddedSuccess: "Kayıt başarıyla eklendi!", alertPhotoUploadFailedImgurIdMissing: "Fotoğraf yüklenemedi: Imgur Client ID eksik. Lütfen kodu kontrol edin.", alertRecordAddFailed: "Kayıt eklenemedi: {errorMsg}", alertRecordsLoadFailed: "Kayıtlar yüklenemedi: {errorMsg}", alertRecordDeletedImgurManual: "Kayıt silindi. Imgur fotoğrafı ({photoURL}) manuel olarak silinmelidir.", alertRecordDeleteSuccess: "Kayıt başarıyla silindi!", alertRecordDeleteFailed: "Kayıt silinemedi: {errorMsg}", alertPrintRecordNotFound: "Yazdırılacak kayıt bulunamadı.", alertPrintNoRecordSelected: "Yazdırılacak kayıt seçilmedi.", alertCallStatusUpdateFailed: "Arama durumu güncellenemedi: {errorMsg}", confirmDeleteTitle: "Kaydı Sil?", confirmDeleteMsg: "Bu kaydı silmek istediğinizden emin misiniz? Bu işlem geri alınamaz. Imgur'a yüklenen fotoğraflar (eğer varsa) Imgur üzerinden ayrıca silinmelidir.", btnCancel: "İptal", btnYesDelete: "Evet, Sil" }
@@ -1205,10 +1208,40 @@
             measurementId: "G-GKH3Z03LX3"
         };
         
-        const IMGUR_CLIENT_ID = 'a81cec9889403e9'; 
+        const IMGUR_CLIENT_ID = 'a81cec9889403e9';
 
-        // === GÜVENLİK KONTROLÜ BAŞLANGICI ===
+        // === GÜVENLİK KONTROLÜ VE BAŞLATMA (DÜZELTİLDİ) ===
         document.addEventListener('DOMContentLoaded', function() {
+            const statusText = document.getElementById('status-text');
+            const connectionStatusDiv = document.getElementById('connection-status');
+            const lang = translations[currentLanguage];
+
+            try {
+                if (!firebaseConfig.apiKey || !firebaseConfig.projectId) {
+                    throw new Error(lang.alertFirebaseConfigMissing);
+                }
+                if (!firebase.apps.length) {
+                    firebase.initializeApp(firebaseConfig);
+                }
+                db = firebase.firestore();
+                isFirebaseInitialized = true;
+                
+                statusText.setAttribute('data-translate', 'connected');
+                statusText.textContent = lang.connected;
+                connectionStatusDiv.classList.remove('status-offline');
+                connectionStatusDiv.classList.add('status-online');
+                
+            } catch (error) {
+                console.error("Firebase başlatma hatası:", error);
+                document.body.style.display = 'block'; // Hata mesajını göstermek için body'i görünür yap
+                statusText.setAttribute('data-translate', 'connectionError');
+                statusText.textContent = lang.connectionError;
+                connectionStatusDiv.classList.remove('status-online');
+                connectionStatusDiv.classList.add('status-offline');
+                showMessage(lang.alertFirebaseInitError.replace('{errorMsg}', error.message), 'error', 10000);
+                return; // Hata durumunda devam etme
+            }
+
             const auth = firebase.auth();
 
             auth.onAuthStateChanged(user => {
@@ -1228,13 +1261,18 @@
         });
 
         function initializeAppLogic(user) {
-            // Mevcut sayfa yükleme kodlarınızın geri kalanını bu fonksiyona taşıyoruz
-            document.documentElement.lang = currentLanguage; 
+            // Bu fonksiyon artık Firebase'i başlatmıyor, sadece uygulama mantığını çalıştırıyor.
+            document.documentElement.lang = currentLanguage;
             document.getElementById('repairDate').valueAsDate = new Date();
             document.getElementById('unitPrice').value = '10';
 
-            initializeFirebase(); // Firebase'i (ve verileri) yükle
-            setLanguage(currentLanguage, true); 
+            const lang = translations[currentLanguage];
+            if (!IMGUR_CLIENT_ID || IMGUR_CLIENT_ID === 'YOUR_IMGUR_CLIENT_ID') {
+                showMessage(lang.alertImgurClientId, 'error', 10000);
+            }
+            showMessage(lang.alertFirebaseInitialized, 'success');
+
+            setLanguage(currentLanguage, true);
 
             document.querySelectorAll('.nav-btn').forEach(btn => {
                 btn.addEventListener('click', (event) => {
@@ -1266,7 +1304,7 @@
                 if (e.target === document.getElementById('photo-modal')) closePhotoModal();
             });
             
-            showSection('add'); 
+            showSection('add');
 
             // Kullanıcı bilgisi ve çıkış butonu ekle
             const userInfoContainer = document.createElement('div');
@@ -1282,56 +1320,8 @@
                 firebase.auth().signOut();
             });
         }
-        // === GÜVENLİK KONTROLÜ SONU ===
-
-
-        function initializeFirebase() {
-            const statusText = document.getElementById('status-text');
-            const connectionStatusDiv = document.getElementById('connection-status');
-            const lang = translations[currentLanguage]; 
-
-            statusText.textContent = lang.connecting; 
-            connectionStatusDiv.classList.remove('status-online', 'status-offline');
-
-            if (!IMGUR_CLIENT_ID || IMGUR_CLIENT_ID === 'YOUR_IMGUR_CLIENT_ID') { 
-                showMessage(lang.alertImgurClientId, 'error', 10000);
-            }
-
-            if (!firebaseConfig.apiKey || !firebaseConfig.projectId) {
-                showMessage(lang.alertFirebaseConfigMissing, 'error', 10000);
-                statusText.setAttribute('data-translate', 'configError'); 
-                statusText.textContent = lang.configError;
-                connectionStatusDiv.classList.remove('status-online');
-                connectionStatusDiv.classList.add('status-offline');
-                return;
-            }
-
-            try {
-                if (!firebase.apps.length) {
-                    firebase.initializeApp(firebaseConfig);
-                }
-                db = firebase.firestore();
-                isFirebaseInitialized = true;
-                showMessage(lang.alertFirebaseInitialized, 'success');
-                statusText.setAttribute('data-translate', 'connected'); 
-                statusText.textContent = lang.connected; 
-                connectionStatusDiv.classList.remove('status-offline');
-                connectionStatusDiv.classList.add('status-online');
-                
-                if (document.getElementById('list-section').classList.contains('active')) {
-                    applyFilters();
-                }
-
-            } catch (error) {
-                console.error("Firebase başlatma hatası:", error);
-                showMessage(lang.alertFirebaseInitError.replace('{errorMsg}', error.message), 'error', 10000);
-                statusText.setAttribute('data-translate', 'connectionError'); 
-                statusText.textContent = lang.connectionError;
-                connectionStatusDiv.classList.remove('status-online');
-                connectionStatusDiv.classList.add('status-offline');
-                isFirebaseInitialized = false;
-            }
-        }
+        
+        // initializeFirebase fonksiyonu artık gerekli değil, içeriği DOMContentLoaded içine taşındı.
 
         function updateUIText() {
             const lang = translations[currentLanguage];
@@ -1340,8 +1330,8 @@
                 if (lang[key]) {
                     if (el.querySelector('.loading') || el.querySelector('.loading-small')) {
                         const spinner = el.querySelector('.loading') || el.querySelector('.loading-small');
-                        el.textContent = lang[key]; 
-                        el.prepend(spinner); 
+                        el.textContent = lang[key];
+                        el.prepend(spinner);
                     } else {
                         el.textContent = lang[key];
                     }
@@ -1359,7 +1349,7 @@
                     el.alt = lang[key];
                 }
             });
-            document.title = lang.pageTitle || translations.tr.pageTitle; 
+            document.title = lang.pageTitle || translations.tr.pageTitle;
 
             document.getElementById('lang-en').classList.toggle('active', currentLanguage === 'en');
             document.getElementById('lang-tr').classList.toggle('active', currentLanguage === 'tr');
@@ -1382,14 +1372,13 @@
             }
         }
 
-
         function setLanguage(lang, isInitialLoad = false) {
             currentLanguage = lang;
             localStorage.setItem('language', lang);
-            document.documentElement.lang = lang; 
-            updateUIText(); 
+            document.documentElement.lang = lang;
+            updateUIText();
             if (isFirebaseInitialized && !isInitialLoad && document.getElementById('list-section').classList.contains('active')) {
-                applyFilters(); 
+                applyFilters();
             }
         }
 
@@ -1412,7 +1401,7 @@
             const lang = translations[currentLanguage];
             if (sectionId === 'list') {
                 if (isFirebaseInitialized) {
-                    applyFilters(); 
+                    applyFilters();
                 } else {
                     const recordsContainer = document.getElementById('records-container');
                      recordsContainer.innerHTML = `
@@ -1425,28 +1414,28 @@
             }
         }
 
-        function showMessage(message, type = 'success', duration = 4000) { 
+        function showMessage(message, type = 'success', duration = 4000) {
             const existingMessage = document.querySelector('.success-message, .error-message');
             if (existingMessage) {
-                existingMessage.remove(); 
+                existingMessage.remove();
             }
 
             const messageDiv = document.createElement('div');
             messageDiv.className = type === 'success' ? 'success-message' : 'error-message';
             messageDiv.textContent = message;
             
-            document.body.appendChild(messageDiv); 
+            document.body.appendChild(messageDiv);
 
             setTimeout(() => {
-                messageDiv.style.top = '20px'; 
+                messageDiv.style.top = '20px';
                 messageDiv.style.opacity = '1';
-            }, 10); 
+            }, 10);
 
 
             setTimeout(() => {
                 messageDiv.style.opacity = '0';
-                messageDiv.style.top = '-100px'; 
-                setTimeout(() => messageDiv.remove(), 500); 
+                messageDiv.style.top = '-100px';
+                setTimeout(() => messageDiv.remove(), 500);
             }, duration);
         }
 
@@ -1456,13 +1445,13 @@
             if (file) {
                 if (!file.type.startsWith('image/')){
                     showMessage(lang.alertInvalidImageFile, 'error');
-                    event.target.value = null; 
+                    event.target.value = null;
                     currentPhotoFile = null;
                     document.getElementById('photo-preview-img').style.display = 'none';
                     document.getElementById('photo-placeholder').style.display = 'block';
                     return;
                 }
-                if (file.size > 10 * 1024 * 1024) { 
+                if (file.size > 10 * 1024 * 1024) {
                     showMessage(lang.alertFileSizeTooLarge, 'error');
                     event.target.value = null;
                     currentPhotoFile = null;
@@ -1471,13 +1460,13 @@
                     return;
                 }
 
-                currentPhotoFile = file; 
+                currentPhotoFile = file;
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     const previewImg = document.getElementById('photo-preview-img');
                     previewImg.src = e.target.result;
                     previewImg.style.display = 'block';
-                    document.getElementById('photo-placeholder').style.display = 'none'; 
+                    document.getElementById('photo-placeholder').style.display = 'none';
                 }
                 reader.readAsDataURL(file);
             } else {
@@ -1489,9 +1478,9 @@
 
         async function uploadPhotoToImgur(file) {
             const lang = translations[currentLanguage];
-            if (!IMGUR_CLIENT_ID || IMGUR_CLIENT_ID === 'YOUR_IMGUR_CLIENT_ID') { 
-                showMessage(lang.alertImgurClientId, 'error', 7000); 
-                return null; 
+            if (!IMGUR_CLIENT_ID || IMGUR_CLIENT_ID === 'YOUR_IMGUR_CLIENT_ID') {
+                showMessage(lang.alertImgurClientId, 'error', 7000);
+                return null;
             }
             
             const formData = new FormData();
@@ -1509,10 +1498,10 @@
                     throw new Error(`Imgur upload failed: ${errorData.data.error || response.statusText}`);
                 }
                 const data = await response.json();
-                return data.data.link; 
+                return data.data.link;
             } catch (error) {
                 console.error("Imgur photo upload error:", error);
-                throw error; 
+                throw error;
             }
         }
 
@@ -1558,20 +1547,20 @@
                 firstName: document.getElementById('firstName').value.trim(),
                 lastName: document.getElementById('lastName').value.trim(),
                 phone: phoneInput,
-                repairDate: document.getElementById('repairDate').value, 
-                returnDate: document.getElementById('returnDate').value, 
-                quantity: quantity, 
+                repairDate: document.getElementById('repairDate').value,
+                returnDate: document.getElementById('returnDate').value,
+                quantity: quantity,
                 unitPrice: unitPrice,
-                totalPrice: quantity * unitPrice, 
+                totalPrice: quantity * unitPrice,
                 hasSet: hasSetSelected.value,
                 notes: document.getElementById('notes').value.trim(),
-                createdAt: firebase.firestore.FieldValue.serverTimestamp(), 
-                completedQuantity: null, 
+                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                completedQuantity: null,
                 completionDate: null,
                 completionNotes: null,
                 completedPhotoURL: null,
-                status: 'pending', 
-                callStatus: null 
+                status: 'pending',
+                callStatus: null
             };
 
 
@@ -1579,8 +1568,8 @@
                 let photoURL = null;
                 if (currentPhotoFile) {
                     submitText.innerHTML = `<div class="loading"></div>${lang.uploadingPhoto}`;
-                    photoURL = await uploadPhotoToImgur(currentPhotoFile); 
-                    if (photoURL) { 
+                    photoURL = await uploadPhotoToImgur(currentPhotoFile);
+                    if (photoURL) {
                        record.photoURL = photoURL;
                     } else if (IMGUR_CLIENT_ID && IMGUR_CLIENT_ID !== 'YOUR_IMGUR_CLIENT_ID') {
                         throw new Error("Imgur photo upload failed for an unknown reason.");
@@ -1591,19 +1580,19 @@
                 await db.collection('repairs').add(record);
                 
                 showMessage(lang.alertRecordAddedSuccess, 'success');
-                document.getElementById('repair-form').reset(); 
-                document.getElementById('repairDate').valueAsDate = new Date(); 
-                document.getElementById('unitPrice').value = '10'; 
-                currentPhotoFile = null; 
+                document.getElementById('repair-form').reset();
+                document.getElementById('repairDate').valueAsDate = new Date();
+                document.getElementById('unitPrice').value = '10';
+                currentPhotoFile = null;
                 document.getElementById('photo-preview-img').style.display = 'none';
                 document.getElementById('photo-placeholder').style.display = 'block';
-                document.getElementById('photoInput').value = null; 
+                document.getElementById('photoInput').value = null;
                 document.getElementById('notes').value = '';
                 
-                showSection('list'); 
+                showSection('list');
                 
             } catch (error) {
-                if (error.message.includes(lang.alertImgurClientId) || (error.message && error.message.toLowerCase().includes("imgur"))) { 
+                if (error.message.includes(lang.alertImgurClientId) || (error.message && error.message.toLowerCase().includes("imgur"))) {
                      showMessage(lang.alertPhotoUploadFailedImgurIdMissing, 'error', 10000);
                 } else {
                      showMessage(lang.alertRecordAddFailed.replace('{errorMsg}', error.message), 'error');
@@ -1626,10 +1615,10 @@
             
             const lang = translations[currentLanguage];
             const recordsContainer = document.getElementById('records-container');
-            recordsContainer.innerHTML = `<div class="empty-state"><div class="loading"></div> ${lang.loadingRecords}</div>`; 
+            recordsContainer.innerHTML = `<div class="empty-state"><div class="loading"></div> ${lang.loadingRecords}</div>`;
 
             db.collection('repairs').orderBy('createdAt', 'desc').onSnapshot(snapshot => {
-                let allRecords = []; 
+                let allRecords = [];
                 snapshot.forEach(doc => {
                     allRecords.push({ id: doc.id, ...doc.data() });
                 });
@@ -1655,7 +1644,7 @@
                     return passesDateFilter && passesSearchFilter;
                 });
 
-                records = filteredRecords; 
+                records = filteredRecords;
                 displayRecords(records);
 
             }, error => {
@@ -1672,7 +1661,7 @@
 
         function displayRecords(recordsToDisplay) {
             const recordsContainer = document.getElementById('records-container');
-            recordsContainer.innerHTML = ''; 
+            recordsContainer.innerHTML = '';
             const lang = translations[currentLanguage];
 
             if (recordsToDisplay.length === 0) {
@@ -1693,14 +1682,14 @@
 
         function formatPhoneNumber(phone) {
             if (!phone) return '-';
-            let cleaned = phone.replace(/\D/g, ''); 
-            if (cleaned.startsWith('0') && cleaned.length === 11) cleaned = cleaned.substring(1); 
-            if (cleaned.length === 10 && !cleaned.startsWith('90')) cleaned = '90' + cleaned; 
+            let cleaned = phone.replace(/\D/g, '');
+            if (cleaned.startsWith('0') && cleaned.length === 11) cleaned = cleaned.substring(1);
+            if (cleaned.length === 10 && !cleaned.startsWith('90')) cleaned = '90' + cleaned;
             
-            if (cleaned.length === 12 && cleaned.startsWith('90')) { 
+            if (cleaned.length === 12 && cleaned.startsWith('90')) {
                 return `+${cleaned.substring(0, 2)} ${cleaned.substring(2, 5)} ${cleaned.substring(5, 8)} ${cleaned.substring(8, 10)} ${cleaned.substring(10, 12)}`;
             }
-            return phone; 
+            return phone;
         }
 
         function createRecordCard(record) {
@@ -1715,7 +1704,7 @@
             const locale = currentLanguage === 'tr' ? 'tr-TR' : 'en-US';
 
             const arrivalDateFormatted = record.repairDate ? new Date(record.repairDate).toLocaleDateString(locale, { day: '2-digit', month: '2-digit', year: 'numeric' }) : lang.notSpecified;
-            const deadlineDateFormatted = record.returnDate ? new Date(record.returnDate).toLocaleDateString(locale, { day: '2-digit', month: '2-digit', year: 'numeric' }) : lang.notSpecified; 
+            const deadlineDateFormatted = record.returnDate ? new Date(record.returnDate).toLocaleDateString(locale, { day: '2-digit', month: '2-digit', year: 'numeric' }) : lang.notSpecified;
             
             let displayTotalPrice;
             if (isCompleted && typeof record.completedQuantity === 'number' && typeof record.unitPrice === 'number') {
@@ -1746,15 +1735,15 @@
             const completionNotesText = record.completionNotes && record.completionNotes.length > 0 ? record.completionNotes.replace(/\n/g, '<br>') : '';
 
             let callStatusVisibleHTML = '';
-            if (isCompleted) { 
+            if (isCompleted) {
                 const callStatusTextVisible = record.callStatus === 'called' ? lang.callStatusCalled : lang.callStatusNotCalled;
                 const callStatusClassVisible = record.callStatus === 'called' ? 'call-status-called-visible' : 'call-status-not-called-visible';
                 
                 let phoneActionHTML = '';
-                if (record.callStatus !== 'called') { 
+                if (record.callStatus !== 'called') {
                     phoneActionHTML = `<span id="call-icon-${record.id}" class="call-action-icon" title="${lang.btnCall}" style="cursor:pointer; margin-left: 8px; font-size: 1.2em;" onclick="handleCallButtonClick('${record.id}', '${record.phone}', event)">📞</span>`;
-                } else { 
-                    phoneActionHTML = `<span style="margin-left: 8px; font-size: 1.2em; opacity: 0.7;">📞</span>`; 
+                } else {
+                    phoneActionHTML = `<span style="margin-left: 8px; font-size: 1.2em; opacity: 0.7;">📞</span>`;
                 }
 
                 callStatusVisibleHTML = `
@@ -1896,13 +1885,13 @@
         }
 
         async function handleCallButtonClick(recordId, phoneNumber, event) {
-            event.stopPropagation(); 
+            event.stopPropagation();
             const lang = translations[currentLanguage];
             const callIcon = document.getElementById(`call-icon-${recordId}`);
             
             if (callIcon) {
-                callIcon.style.pointerEvents = 'none'; 
-                callIcon.textContent = '⏳'; 
+                callIcon.style.pointerEvents = 'none';
+                callIcon.textContent = '⏳';
             }
 
             try {
@@ -1914,9 +1903,9 @@
             } catch (error) {
                 console.error("Arama durumu güncellenirken hata:", error);
                 showMessage(lang.alertCallStatusUpdateFailed.replace('{errorMsg}', error.message), 'error');
-                if (callIcon) { 
+                if (callIcon) {
                     callIcon.style.pointerEvents = 'auto';
-                    callIcon.textContent = '📞'; 
+                    callIcon.textContent = '📞';
                 }
             }
         }
@@ -1936,20 +1925,20 @@
         }
 
         function openPhotoModal(imageURL, event) {
-            if (event) event.stopPropagation(); 
+            if (event) event.stopPropagation();
             if(imageURL) {
                 document.getElementById('modal-image').src = imageURL;
-                document.getElementById('photo-modal').style.display = 'flex'; 
+                document.getElementById('photo-modal').style.display = 'flex';
             }
         }
 
         function closePhotoModal() {
             document.getElementById('photo-modal').style.display = 'none';
-            document.getElementById('modal-image').src = ''; 
+            document.getElementById('modal-image').src = '';
         }
         
         function confirmDeleteRecord(recordId, photoURL, event) {
-            event.stopPropagation(); 
+            event.stopPropagation();
             const lang = translations[currentLanguage];
             const existingModal = document.getElementById('confirm-delete-modal');
             if (existingModal) existingModal.remove();
@@ -1999,14 +1988,14 @@
             try {
                 await db.collection('repairs').doc(recordId).delete();
                 if (photoURL) {
-                    showMessage(lang.alertRecordDeletedImgurManual.replace('{photoURL}', photoURL), 'success', 6000); 
+                    showMessage(lang.alertRecordDeletedImgurManual.replace('{photoURL}', photoURL), 'success', 6000);
                 } else {
                     showMessage(lang.alertRecordDeleteSuccess, 'success');
                 }
             } catch (error) {
                 console.error("Kayıt silinirken hata:", error);
                 showMessage(lang.alertRecordDeleteFailed.replace('{errorMsg}', error.message), 'error');
-                 if (deleteButtonInCard) { 
+                 if (deleteButtonInCard) {
                     deleteButtonInCard.innerHTML = originalButtonText;
                     deleteButtonInCard.disabled = false;
                 }
@@ -2014,11 +2003,11 @@
         }
 
         function openPrintModalSetup(recordId, event) {
-            event.stopPropagation(); 
+            event.stopPropagation();
             const lang = translations[currentLanguage];
-            currentRecordForPrint = records.find(r => r.id === recordId); 
+            currentRecordForPrint = records.find(r => r.id === recordId);
             if (currentRecordForPrint) {
-                document.getElementById('print-modal').style.display = 'flex'; 
+                document.getElementById('print-modal').style.display = 'flex';
             } else {
                 showMessage(lang.alertPrintRecordNotFound, 'error');
             }
@@ -2042,12 +2031,12 @@
             document.getElementById('print-customer').textContent = `${record.firstName || ''} ${record.lastName || ''}`;
             document.getElementById('print-phone').textContent = formatPhoneNumber(record.phone);
             document.getElementById('print-quantity').textContent = record.quantity || '-';
-            document.getElementById('print-delivery').textContent = record.returnDate ? new Date(record.returnDate).toLocaleDateString(locale, { day: '2-digit', month: '2-digit', year: 'numeric' }) : '-'; 
+            document.getElementById('print-delivery').textContent = record.returnDate ? new Date(record.returnDate).toLocaleDateString(locale, { day: '2-digit', month: '2-digit', year: 'numeric' }) : '-';
             
             const labelElement = document.getElementById('print-label');
-            labelElement.style.display = 'block'; 
-            window.print(); 
-            labelElement.style.display = 'none'; 
+            labelElement.style.display = 'block';
+            window.print();
+            labelElement.style.display = 'none';
             closePrintModal();
         }
     </script>
